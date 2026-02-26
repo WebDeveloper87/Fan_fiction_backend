@@ -1,6 +1,5 @@
-import {TypeOrmModuleAsyncOptions, TypeOrmModuleOptions} from "@nestjs/typeorm";
+import {TypeOrmModuleAsyncOptions} from "@nestjs/typeorm";
 import {ConfigModule, ConfigService} from "@nestjs/config";
-
 
 export const databaseConfig: TypeOrmModuleAsyncOptions = {
     imports: [ConfigModule],
@@ -14,5 +13,8 @@ export const databaseConfig: TypeOrmModuleAsyncOptions = {
         database: config.get<string>('DB_NAME'),
         autoLoadEntities: true,
         synchronize: true,
+        ssl: {
+            rejectUnauthorized: false,
+        },
     }),
 };
