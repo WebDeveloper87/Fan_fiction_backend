@@ -3,7 +3,6 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {databaseConfig} from "./database.config";
 import {ConfigModule} from "@nestjs/config";
 
-
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
