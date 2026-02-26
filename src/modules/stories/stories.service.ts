@@ -9,59 +9,55 @@ import {AiStoryDto} from "./dto/ai-story.dto";
 
 @Injectable()
 export class StoriesService {
-    private genAI: GoogleGenAI;
-    private model: any;
+  private genAI: GoogleGenAI;
+  private model: any;
 
-    constructor(
-        @InjectRepository(Story) private storyRepository: Repository<Story>,
-        private configService: ConfigService,
-    ) {
+  constructor(
+    @InjectRepository(Story) private storyRepository: Repository<Story>,
+    private configService: ConfigService,
+  ) {
+    const apiKey = this.configService.get<string>('GEMINI_API_KEY');
+    if (!apiKey) {
+      throw new Error('GEMINI_API_KEY is not defined');
     }
 
+    this.genAI = new GoogleGenAI({ apiKey });
+  }
 
-    async AiGenerate(dto: AiStoryDto) {
-        const apiKey = this.configService.get<string>('GEMINI_API_KEY');
+  async AiGenerate(dto: AiStoryDto) {
+    const prompt = dto.getPrompt();
 
-        if (!apiKey) {
-            throw new Error('GEMINI_API_KEY is not defined');
-        }
+    const response = await this.genAI.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt,
+    });
 
-        const ai = new GoogleGenAI({ apiKey });
+    return {
+      text: response.text,
+    };
+  }
 
-        const prompt = dto.getPrompt();
+  async save(dto: CreateStoryDto, userId: number) {
+    const story = this.storyRepository.create({
+      ...dto,
+      userId,
+    });
 
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: prompt,
-        });
+    return await this.storyRepository.save(story);
+  }
 
-        return {
-            text: response.text,
-        };
-    }
+  async findAllByUserId(userId: number) {
+    return await this.storyRepository.find({
+      where: { userId: userId },
+      order: { createdAt: 'DESC' },
+    });
+  }
 
+  findAll() {
+    return this.storyRepository.find();
+  }
 
-    async save(dto: CreateStoryDto, userId: number) {
-        const story = this.storyRepository.create({
-            ...dto,
-            userId,
-        });
-
-        return await this.storyRepository.save(story);
-    }
-
-    async findAllByUserId(userId: number) {
-        return await this.storyRepository.find({
-            where: {userId: userId},
-            order: {createdAt: 'DESC'}
-        });
-    }
-
-    findAll() {
-        return this.storyRepository.find();
-    }
-
-    findOne(id: number) {
-        return this.storyRepository.findOne({where: {id}});
-    }
+  findOne(id: number) {
+    return this.storyRepository.findOne({ where: { id } });
+  }
 }

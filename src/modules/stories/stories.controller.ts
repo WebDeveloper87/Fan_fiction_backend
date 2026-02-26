@@ -7,6 +7,7 @@ import {AiStoryDto} from "./dto/ai-story.dto";
 @Controller('stories')
 export class StoriesController {
     constructor(private readonly storiesService: StoriesService) {
+
     }
 
     @Post('generate')
