@@ -25,6 +25,14 @@ export class UsersService {
     }
   }
 
+  verifyAccessToken(token: string) {
+    return this.jwtService.verify(token);
+  }
+
+  generateAccessToken(payload: any) {
+    return this.jwtService.sign(payload, { expiresIn: '2h' });
+  }
+
   findAll() {
     return this.userRepository.find();
   }
