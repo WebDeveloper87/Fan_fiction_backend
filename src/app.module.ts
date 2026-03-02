@@ -4,18 +4,18 @@ import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { StoriesModule } from './modules/stories/stories.module';
 import { DatabaseModule } from './database/database.module';
-import {ConfigModule} from "@nestjs/config";
-import * as path from 'path';
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath:  path.resolve(__dirname, '../../.env'),
     }),
     UsersModule,
     StoriesModule,
     DatabaseModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

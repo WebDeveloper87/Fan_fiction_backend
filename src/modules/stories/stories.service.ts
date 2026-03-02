@@ -1,11 +1,11 @@
-import {Injectable, OnModuleInit} from '@nestjs/common';
-import {CreateStoryDto} from './dto/create-story.dto';
-import {InjectRepository} from "@nestjs/typeorm";
-import {Story} from "./entities/story.entity";
-import {Repository} from "typeorm";
-import {GoogleGenAI} from '@google/genai';
-import {ConfigService} from "@nestjs/config";
-import {AiStoryDto} from "./dto/ai-story.dto";
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { CreateStoryDto } from './dto/create-story.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Story } from './entities/story.entity';
+import { Repository } from 'typeorm';
+import { GoogleGenAI } from '@google/genai';
+import { ConfigService } from '@nestjs/config';
+import { AiStoryDto } from './dto/ai-story.dto';
 
 @Injectable()
 export class StoriesService {
