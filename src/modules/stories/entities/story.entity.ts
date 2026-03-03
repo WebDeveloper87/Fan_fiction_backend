@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { StoryStatus } from '../enums/story-status.enum';
 
 @Entity()
 export class Story {
@@ -25,6 +26,9 @@ export class Story {
 
   @Column()
   content: string;
+
+  @Column({ type: 'enum', enum: StoryStatus, default: StoryStatus.PRIVATE, })
+  status: StoryStatus;
 
   @Column()
   fandom: string;

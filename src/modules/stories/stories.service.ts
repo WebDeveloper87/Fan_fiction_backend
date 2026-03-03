@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { CreateStoryDto } from './dto/create-story.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Story } from './entities/story.entity';
@@ -76,5 +76,18 @@ export class StoriesService {
 
   findOne(id: number) {
     return this.storyRepository.findOne({ where: { id } });
+  }
+
+  async setNewStatus(storyId: number, status) {
+    const story = await this.storyRepository.preload({
+      id: storyId,
+      status,
+    });
+
+    if (!story) {
+      throw new NotFoundException('Story not found');
+    }
+
+    return this.storyRepository.save(story);
   }
 }

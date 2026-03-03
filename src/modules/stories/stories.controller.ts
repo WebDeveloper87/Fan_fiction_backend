@@ -6,12 +6,13 @@ import {
   Param,
   UseGuards,
   Request,
-  Req,
+  Req, Patch,
 } from '@nestjs/common'; // Додано Request
 import { StoriesService } from './stories.service';
 import { CreateStoryDto } from './dto/create-story.dto';
 import { JwtAuthGuard } from '../users/guards/jwt-auth.guard';
 import { AiStoryDto } from './dto/ai-story.dto';
+import { StoryStatusDto } from './dto/story-status.dto';
 
 @Controller('stories')
 export class StoriesController {
@@ -49,5 +50,11 @@ export class StoriesController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.storiesService.findOne(+id);
+  }
+
+  @Patch(':id/status')
+  @UseGuards(JwtAuthGuard)
+  async updateStatus(@Param('id') id: string, @Body() dto: StoryStatusDto) {
+    return this.storiesService.setNewStatus(+id, dto.status);
   }
 }
