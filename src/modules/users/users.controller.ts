@@ -1,6 +1,5 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { RefreshUserDto } from './dto/refresh-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -8,11 +7,6 @@ export class UsersController {
   @Get()
   findAll() {
     return this.usersService.findAll();
-  }
-
-  @Post('refresh')
-  async refresh(@Body() dto: RefreshUserDto) {
-    return this.usersService.refresh(dto.refreshToken);
   }
 
   @Get(':id')

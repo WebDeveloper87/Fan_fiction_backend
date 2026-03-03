@@ -1,10 +1,14 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import {
+  Injectable,
+  NestMiddleware,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { UsersService } from '../modules/users/users.service';
+import { AuthService } from '../modules/auth/auth.service';
 
 @Injectable()
 export class RefreshAccessTokenMiddleware implements NestMiddleware {
-  constructor(private readonly userService: UsersService) {}
+  constructor(private readonly authService: AuthService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
     const authHeader = req.headers['authorization'];
@@ -21,16 +25,18 @@ export class RefreshAccessTokenMiddleware implements NestMiddleware {
     }
 
     try {
-      this.userService.verifyAccessToken(accessToken);
+      this.authService.verifyAccessToken(accessToken);
       return next();
     } catch (err) {
       if (err.name === 'TokenExpiredError') {
         try {
           const { accessToken: newAccessToken } =
-            await this.userService.refresh(refreshToken);
+            await this.authService.refresh(refreshToken);
 
           req.headers['authorization'] = `Bearer ${newAccessToken}`;
-        } catch {}
+        } catch(err) {
+          throw new UnauthorizedException('Invalid refresh token');
+        }
       }
     }
     return next();
