@@ -32,21 +32,7 @@ export class StoriesController {
   @Post('generate-and-save')
   @UseGuards(JwtAuthGuard)
   async generateAndSave(@Body() dto: AiStoryDto, @Req() req) {
-    const generatedContent = await this.storiesService.AiGenerate(dto);
-
-    if (!generatedContent.text) {
-      throw new Error('AI did not return any text');
-    }
-
-    const createDto: CreateStoryDto = {
-      title: dto.title,
-      fandom: dto.fandom,
-      genre: dto.genre,
-      prompt: dto.getPrompt(),
-      content: generatedContent.text,
-    };
-
-    return await this.storiesService.save(createDto, req.user.userId);
+    return await this.storiesService.generateAndSave(dto, req.user.userId);
   }
 
   @Get('my-stories')

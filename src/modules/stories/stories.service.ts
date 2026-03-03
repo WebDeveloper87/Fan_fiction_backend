@@ -10,7 +10,6 @@ import { AiStoryDto } from './dto/ai-story.dto';
 @Injectable()
 export class StoriesService {
   private genAI: GoogleGenAI;
-  private model: any;
 
   constructor(
     @InjectRepository(Story) private storyRepository: Repository<Story>,
@@ -35,6 +34,24 @@ export class StoriesService {
     return {
       text: response.text,
     };
+  }
+
+  async generateAndSave(dto: AiStoryDto, userId: number) {
+    const generatedContent = await this.AiGenerate(dto);
+
+    if (!generatedContent.text) {
+      throw new Error('AI did not return any text');
+    }
+
+    const createDto: CreateStoryDto = {
+      title: dto.title,
+      fandom: dto.fandom,
+      genre: dto.genre,
+      prompt: dto.getPrompt(),
+      content: generatedContent.text,
+    };
+
+    return await this.save(createDto, userId);
   }
 
   async save(dto: CreateStoryDto, userId: number) {
