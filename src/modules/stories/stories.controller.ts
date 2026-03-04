@@ -54,7 +54,11 @@ export class StoriesController {
 
   @Patch(':id/status')
   @UseGuards(JwtAuthGuard)
-  async updateStatus(@Param('id') id: string, @Body() dto: StoryStatusDto) {
-    return this.storiesService.setNewStatus(+id, dto.status);
+  async updateStatus(
+    @Param('id') id: string,
+    @Body() dto: StoryStatusDto,
+    @Req() req,
+  ) {
+    return this.storiesService.setNewStatus(+id, dto.status, req.user.userId);
   }
 }
