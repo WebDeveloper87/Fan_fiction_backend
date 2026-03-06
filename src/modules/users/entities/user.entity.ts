@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Story } from '../../stories/entities/story.entity';
+import { Review } from './review.entity';
 
 @Entity()
 export class User {
@@ -26,4 +27,7 @@ export class User {
 
   @OneToMany(() => Story, (story) => story.user)
   stories: Story[];
+
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
 }
