@@ -1,33 +1,44 @@
-import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import {User} from "../../users/entities/user.entity";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { User } from '../../users/entities/user.entity';
+import { StoryStatus } from '../enums/story-status.enum';
 
 @Entity()
 export class Story {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    userId: number;
+  @Column()
+  userId: number;
 
-    @ManyToOne(() => User, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "userId" })
-    user: User;
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
-    @Column()
-    title: string;
+  @Column()
+  title: string;
 
-    @Column()
-    content: string;
+  @Column()
+  content: string;
 
-    @Column()
-    fandom: string;
+  @Column({ type: 'enum', enum: StoryStatus, default: StoryStatus.PRIVATE, })
+  status: StoryStatus;
 
-    @Column()
-    genre: string;
+  @Column()
+  fandom: string;
 
-    @Column()
-    prompt: string;
+  @Column()
+  genre: string;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @Column()
+  prompt: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }
