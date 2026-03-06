@@ -98,4 +98,15 @@ export class StoriesService {
 
     return this.storyRepository.save(story);
   }
+
+  async getStories(limit: number, page: number) {
+    return this.storyRepository.find({
+      take: limit,
+      skip: (page - 1) * limit,
+      order: {
+        createdAt: 'DESC',
+        id: 'DESC'
+      },
+    });
+  }
 }

@@ -61,4 +61,10 @@ export class StoriesController {
   ) {
     return this.storiesService.setNewStatus(+id, dto.status, req.user.userId);
   }
+
+  @Get(':limit/:page')
+  @UseGuards(JwtAuthGuard)
+  async getStories(@Param('limit') limit: number, @Param('page') page: number) {
+    return this.storiesService.getStories(+limit, +page);
+  }
 }

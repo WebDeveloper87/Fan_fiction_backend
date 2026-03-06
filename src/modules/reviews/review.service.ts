@@ -18,4 +18,8 @@ export class ReviewService {
 
     return this.reviewRepository.save(review);
   }
+
+  findAll() {
+    return this.reviewRepository.find();
+  }
 }

@@ -7,13 +7,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategy/jwt.strategy';
-import { ReviewController } from './review.controller';
-import { ReviewService } from './review.service';
-import { Review } from './entities/review.entity';
+import { ReviewController } from '../reviews/review.controller';
+import { ReviewService } from '../reviews/review.service';
+import { Review } from '../reviews/entities/review.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Review]),
+    TypeOrmModule.forFeature([User]),
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -24,8 +24,8 @@ import { Review } from './entities/review.entity';
       }),
     }),
   ],
-  providers: [UsersService, JwtStrategy, ReviewService],
-  controllers: [UsersController, ReviewController],
+  providers: [UsersService, JwtStrategy],
+  controllers: [UsersController],
   exports: [UsersService],
 })
 export class UsersModule {}
