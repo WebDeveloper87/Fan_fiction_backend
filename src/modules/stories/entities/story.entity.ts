@@ -27,7 +27,7 @@ export class Story {
   @Column()
   content: string;
 
-  @Column({ type: 'enum', enum: StoryStatus, default: StoryStatus.PRIVATE, })
+  @Column({ type: 'enum', enum: StoryStatus, default: StoryStatus.PRIVATE })
   status: StoryStatus;
 
   @Column()

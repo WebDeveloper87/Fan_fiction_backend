@@ -1,4 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
+import { User } from '../../users/entities/user.entity';
+import { ManyToOne } from 'typeorm';
 
 export class CreateStoryDto {
   @IsString()

@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { GoogleGenAI } from '@google/genai';
 import { ConfigService } from '@nestjs/config';
 import { AiStoryDto } from './dto/ai-story.dto';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class StoriesService {

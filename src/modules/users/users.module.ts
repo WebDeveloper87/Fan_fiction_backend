@@ -7,13 +7,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategy/jwt.strategy';
-import { ReviewController } from '../reviews/review.controller';
-import { ReviewService } from '../reviews/review.service';
-import { Review } from '../reviews/entities/review.entity';
+import { Story } from '../stories/entities/story.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Story]),
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

@@ -6,8 +6,9 @@ import {
   Param,
   UseGuards,
   Request,
-  Req, Patch,
-} from '@nestjs/common'; // Додано Request
+  Req,
+  Patch,
+} from '@nestjs/common';
 import { StoriesService } from './stories.service';
 import { CreateStoryDto } from './dto/create-story.dto';
 import { JwtAuthGuard } from '../users/guards/jwt-auth.guard';
