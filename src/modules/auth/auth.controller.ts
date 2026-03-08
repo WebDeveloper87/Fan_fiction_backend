@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Post, Headers } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Headers,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { AuthService } from './auth.service';
@@ -15,5 +22,19 @@ export class AuthController {
   @Post('login')
   login(@Body() dto: LoginUserDto) {
     return this.authService.login(dto);
+  }
+
+  @Post('verify')
+  verify(@Body('token') token: string) {
+    try {
+      return this.authService.verifyAccessToken(token);
+    } catch {
+      throw new UnauthorizedException();
+    }
+  }
+
+  @Post('refresh')
+  refresh(@Body('refreshToken') refreshToken: string) {
+    return this.authService.refresh(refreshToken);
   }
 }
