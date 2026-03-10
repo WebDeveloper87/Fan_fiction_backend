@@ -6,11 +6,12 @@ import {
 import { CreateStoryDto } from './dto/create-story.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Story } from './entities/story.entity';
-import { Repository } from 'typeorm';
+import { Repository, LessThan } from 'typeorm';
 import { GoogleGenAI } from '@google/genai';
 import { ConfigService } from '@nestjs/config';
 import { AiStoryDto } from './dto/ai-story.dto';
 import { User } from '../users/entities/user.entity';
+import { StoryStatus } from './enums/story-status.enum';
 
 @Injectable()
 export class StoriesService {
@@ -100,14 +101,32 @@ export class StoriesService {
     return this.storyRepository.save(story);
   }
 
-  async getStories(limit: number, page: number) {
-    return this.storyRepository.find({
+  async getStories(limit: number, cursor?: number) {
+    const [stories, totalCount] = await this.storyRepository.findAndCount({
+      relations: ['user'],
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        user: {
+          id: true,
+          username: true,
+        },
+      },
+      where: {
+        status: StoryStatus.PUBLIC,
+        ...(cursor !== undefined && { id: LessThan(cursor) }),
+      },
       take: limit,
-      skip: (page - 1) * limit,
       order: {
-        createdAt: 'DESC',
-        id: 'DESC'
+        id: 'DESC',
       },
     });
+
+    return {
+      stories,
+      totalCount,
+      nextCursor: stories.length ? stories[stories.length - 1].id : null,
+    };
   }
 }
