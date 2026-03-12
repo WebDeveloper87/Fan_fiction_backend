@@ -13,6 +13,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
 import { RefreshAccessTokenMiddleware } from './middleware/refresh-token.middleware';
 import { ReviewsModule } from './modules/reviews/reviews.module';
+import { LikesModule } from './modules/likes/likes.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
     DatabaseModule,
     AuthModule,
     ReviewsModule,
+    LikesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
