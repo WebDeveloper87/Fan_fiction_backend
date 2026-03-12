@@ -100,7 +100,21 @@ export class StoriesService {
   }
 
   findOne(id: number) {
-    return this.storyRepository.findOne({ where: { id } });
+    return this.storyRepository.findOne({
+      relations: ['user'],
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        createdAt: true,
+        genre: true,
+        fandom: true,
+        user: {
+          username: true,
+        },
+      },
+      where: { id },
+    });
   }
 
   async setNewStatus(storyId: number, status, userId) {
