@@ -17,7 +17,6 @@ import { CreateStoryDto } from './dto/create-story.dto';
 import { JwtAuthGuard } from '../users/guards/jwt-auth.guard';
 import { AiStoryDto } from './dto/ai-story.dto';
 import { StoryStatusDto } from './dto/story-status.dto';
-
 @Controller('stories')
 export class StoriesController {
   constructor(private readonly storiesService: StoriesService) {}
@@ -44,7 +43,10 @@ export class StoriesController {
   async generateAndSave(@Body() dto: AiStoryDto, @Req() req) {
     return await this.storiesService.generateAndSave(dto, req.user.userId);
   }
-
+  @Get('user/:username')
+  findPublicStoriesByUsername(@Param('username') username: string) {
+    return this.storiesService.findPublicByUsername(username);
+  }
   @Get('my-stories')
   @UseGuards(JwtAuthGuard)
   findAllMyStories(@Request() req) {

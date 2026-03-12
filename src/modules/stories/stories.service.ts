@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateStoryDto } from './dto/create-story.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Story } from './entities/story.entity';
@@ -10,8 +6,9 @@ import { Repository, LessThan } from 'typeorm';
 import { GoogleGenAI } from '@google/genai';
 import { ConfigService } from '@nestjs/config';
 import { AiStoryDto } from './dto/ai-story.dto';
-import { User } from '../users/entities/user.entity';
 import { StoryStatus } from './enums/story-status.enum';
+import { User } from '../users/entities/user.entity';
+
 
 @Injectable()
 export class StoriesService {
@@ -19,6 +16,7 @@ export class StoriesService {
 
   constructor(
     @InjectRepository(Story) private storyRepository: Repository<Story>,
+    @InjectRepository(User) private userRepository: Repository<User>,
     private configService: ConfigService,
   ) {
     const apiKey = this.configService.get<string>('GEMINI_API_KEY');
@@ -76,6 +74,27 @@ export class StoriesService {
     });
   }
 
+  async findPublicByUsername(username: string) {
+    const user = await this.userRepository.findOne({
+      where: { username: username },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.storyRepository.find({
+      where: {
+        userId: user.id,
+        status: StoryStatus.PUBLIC,
+      },
+      order: {
+        createdAt: 'DESC',
+        id: 'DESC',
+      },
+    });
+  }
+
   findAll() {
     return this.storyRepository.find();
   }
@@ -119,6 +138,7 @@ export class StoriesService {
       },
       take: limit,
       order: {
+        createdAt: 'DESC',
         id: 'DESC',
       },
     });

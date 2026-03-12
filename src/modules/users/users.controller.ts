@@ -23,12 +23,17 @@ export class UsersController {
   getUser(@Req() req) {
     return this.usersService.getUserProfile(req.user.userId);
   }
+
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getMe(@Req() req) {
     return this.usersService.getMyProfile(req.user.userId);
   }
 
+  @Get('username/:username')
+  findByUsername(@Param('username') username: string) {
+    return this.usersService.findByUsername(username);
+  }
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
