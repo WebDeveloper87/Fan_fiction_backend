@@ -127,6 +127,7 @@ export class StoriesService {
         id: true,
         title: true,
         content: true,
+        createdAt: true,
         user: {
           id: true,
           username: true,
