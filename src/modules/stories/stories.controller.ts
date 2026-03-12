@@ -8,6 +8,9 @@ import {
   Request,
   Req,
   Patch,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { StoriesService } from './stories.service';
 import { CreateStoryDto } from './dto/create-story.dto';
@@ -22,6 +25,11 @@ export class StoriesController {
   @UseGuards(JwtAuthGuard)
   async generate(@Body() dto: AiStoryDto) {
     return await this.storiesService.AiGenerate(dto);
+  }
+
+  @Get()
+  findAll() {
+    return this.storiesService.findAll();
   }
 
   @Post('save')
@@ -45,16 +53,6 @@ export class StoriesController {
     return this.storiesService.findAllByUserId(req.user.userId);
   }
 
-  @Get()
-  findAll() {
-    return this.storiesService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.storiesService.findOne(+id);
-  }
-
   @Patch(':id/status')
   @UseGuards(JwtAuthGuard)
   async updateStatus(
@@ -65,9 +63,19 @@ export class StoriesController {
     return this.storiesService.setNewStatus(+id, dto.status, req.user.userId);
   }
 
-  @Get(':limit/:page')
-  @UseGuards(JwtAuthGuard)
-  async getStories(@Param('limit') limit: number, @Param('page') page: number) {
-    return this.storiesService.getStories(+limit, +page);
+  @Get('/pagination')
+  async getStories(
+    @Query('limit', ParseIntPipe) limit: number,
+    @Query('cursor') cursor?: string,
+  ) {
+    return this.storiesService.getStories(
+      limit,
+      cursor ? Number(cursor) : undefined,
+    );
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.storiesService.findOne(+id);
   }
 }
