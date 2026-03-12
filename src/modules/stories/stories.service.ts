@@ -120,9 +120,9 @@ export class StoriesService {
     return this.storyRepository.save(story);
   }
 
-  async getStories(limit: number, cursor?: number) {
+  async getStories(userId: number, limit: number, cursor?: number) {
     const [stories, totalCount] = await this.storyRepository.findAndCount({
-      relations: ['user'],
+      relations: ['user', 'likes', 'likes.user'],
       select: {
         id: true,
         title: true,
@@ -144,8 +144,19 @@ export class StoriesService {
       },
     });
 
+    const storiesWithLikes = stories.map((story) => {
+      const likesCount = story.likes.length;
+      const isLiked = story.likes.some((like) => like.user.id === userId);
+
+      return {
+        ...story,
+        likesCount,
+        isLiked,
+      };
+    });
+
     return {
-      stories,
+      stories: storiesWithLikes,
       totalCount,
       nextCursor: stories.length ? stories[stories.length - 1].id : null,
     };

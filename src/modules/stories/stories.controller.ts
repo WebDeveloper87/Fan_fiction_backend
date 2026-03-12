@@ -64,11 +64,14 @@ export class StoriesController {
   }
 
   @Get('/pagination')
+  @UseGuards(JwtAuthGuard)
   async getStories(
     @Query('limit', ParseIntPipe) limit: number,
+    @Req() req,
     @Query('cursor') cursor?: string,
   ) {
     return this.storiesService.getStories(
+      req.user.userId,
       limit,
       cursor ? Number(cursor) : undefined,
     );
