@@ -24,6 +24,12 @@ export class UsersController {
     return this.usersService.getUserProfile(req.user.userId);
   }
 
+  @Get('/leaderboard')
+  @UseGuards(JwtAuthGuard)
+  leaderboard() {
+    return this.usersService.leaderboard();
+  }
+
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getMe(@Req() req) {

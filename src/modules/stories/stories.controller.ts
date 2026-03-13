@@ -63,6 +63,12 @@ export class StoriesController {
     return this.storiesService.setNewStatus(+id, dto.status, req.user.userId);
   }
 
+  @Get('/leaderboard')
+  @UseGuards(JwtAuthGuard)
+  async leaderboard() {
+    return await this.storiesService.leaderboard();
+  }
+
   @Get('/pagination')
   @UseGuards(JwtAuthGuard)
   async getStories(

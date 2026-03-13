@@ -77,6 +77,30 @@ export class UsersService {
     };
   }
 
+  async leaderboard() {
+    const stories = await this.storyRepository.find({
+      relations: ['user', 'likes'],
+    });
+
+
+    const authorMap: Record<string, { username: string; likesCount: number }> =
+      {};
+
+    stories.forEach((story) => {
+      const username = story.user.username;
+      if (!authorMap[username]) {
+        authorMap[username] = { username, likesCount: 0 };
+      }
+      authorMap[username].likesCount += story.likes.length;
+    });
+
+    const leaderboard = Object.values(authorMap)
+      .sort((a, b) => b.likesCount - a.likesCount)
+      .slice(0, 10);
+
+    return leaderboard;
+  }
+
   async getMyProfile(userId: number) {
     const user = await this.findOne(userId);
 
