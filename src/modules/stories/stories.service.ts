@@ -117,6 +117,26 @@ export class StoriesService {
     });
   }
 
+  async leaderboard() {
+    const stories = await this.storyRepository.find({
+      relations: ["likes", "user"],
+    });
+
+    const sortedStories = stories
+      .map((story) => ({
+        id: story.id,
+        title: story.title,
+        genre: story.genre,
+        fandom: story.fandom,
+        author: story.user.username,
+        likesCount: story.likes.length,
+      }))
+      .sort((a, b) => b.likesCount - a.likesCount)
+      .slice(0, 10);
+
+    return sortedStories;
+  }
+
   async setNewStatus(storyId: number, status, userId) {
     const story = await this.storyRepository.findOne({
       where: {

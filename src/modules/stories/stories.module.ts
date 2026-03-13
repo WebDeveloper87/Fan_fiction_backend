@@ -6,6 +6,7 @@ import { Story } from './entities/story.entity';
 import { ConfigModule } from '@nestjs/config';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
+import { Like } from '../likes/entities/like.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Story, User]), ConfigModule],
